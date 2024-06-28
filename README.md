@@ -2903,3 +2903,77 @@ The technologies and algorithms required for an image identification and blurrin
 - **Pre-trained Model Libraries**: Hugging Face Transformers, TensorFlow, Keras, PyTorch.
 
 These components work together to build a robust system capable of detecting and blurring sensitive content in images. The choice of specific models and tools depends on the project requirements, such as the need for real-time processing, accuracy, and ease of use.
+
+Regular expressions (regex) are sequences of characters that define a search pattern. They are used for pattern matching within strings. Regex defined words, or tokens, can include various constructs to match specific patterns in text. Here are some common regex constructs and examples of defined words:
+
+1. **Literals**: Exact characters or words.
+   - Example: `cat` matches the exact string "cat".
+
+2. **Character Classes**: A set of characters.
+   - Example: `[aeiou]` matches any single vowel.
+   - Example: `[0-9]` matches any single digit.
+
+3. **Predefined Character Classes**:
+   - `\d`: Matches any digit, equivalent to `[0-9]`.
+   - `\D`: Matches any non-digit.
+   - `\w`: Matches any word character (alphanumeric + underscore), equivalent to `[a-zA-Z0-9_]`.
+   - `\W`: Matches any non-word character.
+   - `\s`: Matches any whitespace character (space, tab, newline).
+   - `\S`: Matches any non-whitespace character.
+
+4. **Anchors**: Match positions within a string.
+   - `^`: Matches the start of a string.
+   - `$`: Matches the end of a string.
+
+5. **Quantifiers**: Specify the number of occurrences.
+   - `*`: Matches 0 or more occurrences.
+   - `+`: Matches 1 or more occurrences.
+   - `?`: Matches 0 or 1 occurrence.
+   - `{n}`: Matches exactly n occurrences.
+   - `{n,}`: Matches n or more occurrences.
+   - `{n,m}`: Matches between n and m occurrences.
+
+6. **Groups and Ranges**:
+   - `(...)`: Capturing group.
+   - `(?:...)`: Non-capturing group.
+   - `|`: Alternation (OR).
+
+7. **Escaped Characters**: Special characters that need to be escaped with a backslash to match literally.
+   - Example: `\.` matches a literal period.
+   - Example: `\\` matches a literal backslash.
+
+8. **Word Boundaries**:
+   - `\b`: Matches a word boundary.
+   - `\B`: Matches a non-word boundary.
+
+### Examples of Regex Defined Words
+- **Word Characters**: `\w+`
+  - Matches any sequence of one or more word characters (e.g., "hello", "world").
+  
+- **Email Address**: `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`
+  - Matches email addresses (e.g., "example@example.com").
+  
+- **Phone Number**: `\(\d{3}\)\s?\d{3}-\d{4}`
+  - Matches US phone numbers in the format "(123) 456-7890".
+
+- **Date (YYYY-MM-DD)**: `\d{4}-\d{2}-\d{2}`
+  - Matches dates in the format "2024-06-24".
+
+- **Hex Color Code**: `#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})`
+  - Matches hex color codes (e.g., "#FFFFFF", "#FFF").
+
+### Practical Example
+Suppose we want to extract all words from a string that start with a capital letter and are followed by lowercase letters. We could use the following regex:
+
+```regex
+\b[A-Z][a-z]*\b
+```
+
+- `\b`: Word boundary ensures the word starts at the beginning of a word.
+- `[A-Z]`: Matches a single uppercase letter.
+- `[a-z]*`: Matches zero or more lowercase letters.
+- `\b`: Word boundary ensures the word ends at the end of a word.
+
+This regex would match words like "Hello", "World", but not "HELLO" or "world".
+
+These are just a few examples of how regex can be used to define and match words and patterns within text.

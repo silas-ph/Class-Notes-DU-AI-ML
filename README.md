@@ -2977,3 +2977,74 @@ Suppose we want to extract all words from a string that start with a capital let
 This regex would match words like "Hello", "World", but not "HELLO" or "world".
 
 These are just a few examples of how regex can be used to define and match words and patterns within text.
+
+In Natural Language Processing (NLP), lemmatization is a technique used to reduce words to their base or root form (known as the lemma). This process is more sophisticated than stemming because it considers the context of the word to ensure that the root word is a valid word in the language.
+
+The command you mentioned, `lem = [lemmatizer.lemmatize(word, pos='r') for word in words]`, uses the `WordNetLemmatizer` from the NLTK library in Python. Here, `lemmatizer.lemmatize(word, pos='r')` lemmatizes each word in the `words` list, treating them as adverbs (`pos='r'`).
+
+### Explanation of the Command
+
+- `lemmatizer`: An instance of the `WordNetLemmatizer` class.
+- `lemmatize(word, pos='r')`: The `lemmatize` method is called on each word, with `pos='r'` indicating that the word should be treated as an adverb.
+- `words`: A list of words to be lemmatized.
+- `lem`: A list comprehension that generates a new list of lemmatized words.
+
+### Parts of Speech (POS) Tags
+
+The `pos` parameter in the `lemmatize` method specifies the part of speech of the word to be lemmatized. The WordNet lemmatizer can lemmatize words according to their POS tags, which improves accuracy. Here are the POS tags that can be used:
+
+- **'n'**: Noun
+- **'v'**: Verb
+- **'a'**: Adjective
+- **'r'**: Adverb
+- **'s'**: Adjective satellite (a subcategory of adjectives used in WordNet)
+
+### Example with Different POS Tags
+
+Here's how you can use the `lemmatize` method with different POS tags:
+
+```python
+from nltk.stem import WordNetLemmatizer
+
+# Create an instance of the WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+
+# List of words to be lemmatized
+words = ["running", "better", "happily", "dogs"]
+
+# Lemmatize as verbs
+lem_verbs = [lemmatizer.lemmatize(word, pos='v') for word in words]
+print("As Verbs:", lem_verbs)
+
+# Lemmatize as nouns
+lem_nouns = [lemmatizer.lemmatize(word, pos='n') for word in words]
+print("As Nouns:", lem_nouns)
+
+# Lemmatize as adjectives
+lem_adjectives = [lemmatizer.lemmatize(word, pos='a') for word in words]
+print("As Adjectives:", lem_adjectives)
+
+# Lemmatize as adverbs
+lem_adverbs = [lemmatizer.lemmatize(word, pos='r') for word in words]
+print("As Adverbs:", lem_adverbs)
+```
+
+### Output
+
+```
+As Verbs: ['run', 'better', 'happily', 'dog']
+As Nouns: ['running', 'better', 'happily', 'dog']
+As Adjectives: ['running', 'good', 'happily', 'dog']
+As Adverbs: ['running', 'better', 'happily', 'dogs']
+```
+
+### Explanation
+
+- **Verbs**: "running" becomes "run", "better" remains "better" (as in "to better"), "happily" remains "happily" (no verb form), and "dogs" becomes "dog" (the base form).
+- **Nouns**: "running", "better", "happily", and "dog" remain unchanged, as they are not recognized as base forms of nouns.
+- **Adjectives**: "better" changes to "good", showing a correct transformation for comparative adjectives.
+- **Adverbs**: Words remain unchanged because "running", "better", "happily", and "dogs" are not recognized adverbs.
+
+### Conclusion
+
+Using the correct POS tag with the lemmatizer improves the accuracy of the lemmatization process, ensuring that words are reduced to their appropriate base forms considering their context in the text. The different POS tags ('n', 'v', 'a', 'r', 's') can be used depending on the nature of the words you are processing.

@@ -3170,3 +3170,129 @@ display_topics(lda, feature_names, 3)
 ### Conclusion
 
 Latent Dirichlet Allocation (LDA) is a powerful technique for uncovering hidden topics in a collection of documents. By understanding and applying LDA, you can gain insights into the structure and themes within large sets of text data.
+
+### Introduction to Nonnegative Matrix Factorization (NMF)
+
+Nonnegative Matrix Factorization (NMF) is a powerful technique used in machine learning and data analysis for dimensionality reduction and data decomposition. It is particularly useful when dealing with data that is nonnegative, meaning all elements are zero or positive, such as images, audio signals, and text data.
+
+### Key Concepts and Definitions
+
+1. **Matrix Factorization**:
+   - A method of decomposing a matrix into two or more matrices that, when multiplied together, approximate the original matrix.
+
+2. **Nonnegative Matrix**:
+   - A matrix where all the elements are zero or positive.
+   - Example: 
+     \[
+     \begin{bmatrix}
+     2 & 3 \\
+     0 & 5
+     \end{bmatrix}
+     \]
+
+3. **Dimensionality Reduction**:
+   - The process of reducing the number of random variables under consideration by obtaining a set of principal variables.
+   - Helps in simplifying models and reducing computational costs.
+
+4. **Components**:
+   - In NMF, the original matrix is decomposed into two lower-dimensional matrices: \( W \) (basis matrix) and \( H \) (coefficient matrix).
+
+### Why Use NMF?
+
+1. **Interpretability**:
+   - The components (topics, features, etc.) extracted by NMF are easier to interpret because they are nonnegative. This means we can understand and visualize the factors contributing to the data.
+
+2. **Sparsity**:
+   - NMF often leads to sparse representations where many elements are zero. This sparsity can make the results more interpretable and highlight the most significant features.
+
+3. **Applications**:
+   - **Topic Modeling**: Identifying topics in a collection of documents.
+   - **Image Processing**: Decomposing images into parts and textures.
+   - **Recommender Systems**: Predicting user preferences by decomposing user-item interaction matrices.
+
+### How Does NMF Work?
+
+1. **Starting Point**:
+   - You have a nonnegative matrix \( V \) (e.g., a document-term matrix in text analysis).
+
+2. **Objective**:
+   - Decompose \( V \) into two nonnegative matrices \( W \) and \( H \) such that:
+     \[
+     V \approx WH
+     \]
+     - \( V \) is an \( m \times n \) matrix.
+     - \( W \) is an \( m \times k \) matrix (basis matrix).
+     - \( H \) is a \( k \times n \) matrix (coefficient matrix).
+     - \( k \) is the number of components (topics/features).
+
+3. **Optimization**:
+   - NMF minimizes the difference between \( V \) and \( WH \) using iterative optimization techniques. The common objective function is the Frobenius norm (sum of the squared differences).
+
+### Example: Topic Modeling
+
+Imagine you have a collection of text documents and you want to discover the underlying topics.
+
+1. **Document-Term Matrix**:
+   - Create a matrix \( V \) where each row represents a document and each column represents a word. The elements are the counts of words in the documents.
+
+2. **Applying NMF**:
+   - Decompose \( V \) into \( W \) and \( H \).
+     - \( W \) contains the contribution of each word to each topic.
+     - \( H \) contains the contribution of each topic to each document.
+
+3. **Interpreting Results**:
+   - The rows of \( W \) show which words are important for each topic.
+   - The columns of \( H \) show the distribution of topics in each document.
+
+### Example Code
+
+Here’s a simple implementation using Python’s `sklearn` library:
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.decomposition import NMF
+from sklearn.feature_extraction.text import CountVectorizer
+
+# Sample data
+documents = [
+    "The cat sat on the mat.",
+    "The dog chased the cat.",
+    "The cat and the dog are friends."
+]
+
+# Convert the text data to a document-term matrix
+vectorizer = CountVectorizer(stop_words='english')
+dtm = vectorizer.fit_transform(documents)
+dtm_df = pd.DataFrame(dtm.toarray(), columns=vectorizer.get_feature_names_out())
+
+# Apply NMF
+nmf_model = NMF(n_components=2, random_state=0)
+W = nmf_model.fit_transform(dtm_df)
+H = nmf_model.components_
+
+# Display the results
+print("Basis matrix (W):")
+print(pd.DataFrame(W, columns=['Topic 1', 'Topic 2']))
+
+print("\nCoefficient matrix (H):")
+print(pd.DataFrame(H, columns=vectorizer.get_feature_names_out(), index=['Topic 1', 'Topic 2']))
+```
+
+### Explanation of the Code
+
+1. **Data Preparation**:
+   - `documents` is a list of text documents.
+   - `CountVectorizer` converts the text documents into a document-term matrix (DTM), where each row represents a document and each column represents a word.
+
+2. **Applying NMF**:
+   - `NMF` is initialized with `n_components=2`, indicating we want to find 2 topics.
+   - The model is fitted to the DTM, and the basis matrix `W` and the coefficient matrix `H` are extracted.
+
+3. **Displaying Results**:
+   - The basis matrix `W` shows the contribution of each document to each topic.
+   - The coefficient matrix `H` shows the contribution of each word to each topic.
+
+### Conclusion
+
+Nonnegative Matrix Factorization (NMF) is a valuable technique for decomposing data into interpretable components, especially when dealing with nonnegative data. It is widely used in various applications, including topic modeling, image processing, and recommender systems. By understanding the key concepts and how NMF works, you can apply this technique to uncover hidden patterns and structures in your data.

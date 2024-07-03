@@ -3445,3 +3445,153 @@ for epoch in range(100):
 ### Conclusion
 
 Recurrent Neural Networks (RNNs) are powerful tools for handling sequential data. They maintain hidden states to capture information from previous time steps, making them suitable for tasks like language modeling, time series prediction, and more. Understanding the key concepts and seeing practical examples can help beginners grasp how RNNs work and how to implement them in real-world scenarios.
+
+### Introduction to Long Short-Term Memory (LSTM) Networks
+
+Long Short-Term Memory (LSTM) networks are a type of Recurrent Neural Network (RNN) designed to address the limitations of traditional RNNs, particularly their inability to capture long-term dependencies due to the vanishing gradient problem.
+
+### Key Concepts and Definitions
+
+1. **Vanishing Gradient Problem**:
+   - In traditional RNNs, gradients used during training can become very small, making it difficult to update weights and learn long-term dependencies.
+   - This results in the network "forgetting" earlier parts of the sequence when processing long sequences.
+
+2. **LSTM Cell**:
+   - The basic unit of an LSTM network. It includes mechanisms (gates) to control the flow of information.
+   - An LSTM cell contains:
+     - **Forget Gate**: Decides what information to discard from the cell state.
+     - **Input Gate**: Decides what new information to store in the cell state.
+     - **Output Gate**: Decides what information to output based on the cell state.
+
+3. **Cell State**:
+   - The memory of the LSTM cell. It can carry information across many time steps, even hundreds of them.
+   - The cell state is modified by the forget and input gates.
+
+### How LSTM Works
+
+1. **Forget Gate**:
+   - Input: Previous hidden state (\(h_{t-1}\)), current input (\(x_t\)).
+   - Output: A vector of numbers between 0 and 1, representing the extent to which each element of the cell state should be forgotten.
+   - Formula:
+     \[
+     f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+     \]
+
+2. **Input Gate**:
+   - Determines which values from the input to update the cell state.
+   - Composed of two parts:
+     - **Input Modulation Gate**: Creates a vector of new candidate values (\(\tilde{C_t}\)) that could be added to the cell state.
+     - **Input Gate**: Controls which of these values to add.
+   - Formulas:
+     \[
+     i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)
+     \]
+     \[
+     \tilde{C_t} = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)
+     \]
+
+3. **Update Cell State**:
+   - Combines the old cell state (\(C_{t-1}\)) and the new candidate values to update the cell state.
+   - Formula:
+     \[
+     C_t = f_t * C_{t-1} + i_t * \tilde{C_t}
+     \]
+
+4. **Output Gate**:
+   - Determines what the next hidden state should be.
+   - Formula:
+     \[
+     o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)
+     \]
+     \[
+     h_t = o_t * \tanh(C_t)
+     \]
+
+### Example
+
+Imagine you are trying to predict the next word in a sentence. You might have sentences like "The cat sat on the" and you want to predict "mat".
+
+1. **Input Sequence**:
+   - Each word is converted into a vector (using techniques like word embeddings).
+
+2. **Processing with LSTM**:
+   - For each word in the sequence, the LSTM cell updates its cell state and hidden state using the gates.
+
+3. **Output**:
+   - After processing the sequence, the LSTM predicts the next word based on the final hidden state.
+
+### Code Example
+
+Here’s a simple implementation of an LSTM using Python and the PyTorch library:
+
+#### 1. Install PyTorch
+If you haven't already, install PyTorch:
+```sh
+pip install torch
+```
+
+#### 2. Define the LSTM Model
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleLSTM(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(SimpleLSTM, self).__init__()
+        self.hidden_size = hidden_size
+        self.lstm = nn.LSTM(input_size, hidden_size)
+        self.linear = nn.Linear(hidden_size, output_size)
+
+    def forward(self, input_seq):
+        lstm_out, _ = self.lstm(input_seq)
+        output = self.linear(lstm_out[-1])
+        return output
+
+# Hyperparameters
+input_size = 10
+hidden_size = 20
+output_size = 10
+
+# Initialize the model, loss function, and optimizer
+model = SimpleLSTM(input_size, hidden_size, output_size)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+```
+
+#### 3. Training the LSTM
+```python
+# Dummy input and target tensors
+inputs = torch.randn(5, 1, input_size)  # Sequence length = 5, batch size = 1
+targets = torch.tensor([1], dtype=torch.long)
+
+# Training loop
+for epoch in range(100):
+    optimizer.zero_grad()
+    output = model(inputs)
+    loss = criterion(output.view(1, -1), targets)
+    loss.backward()
+    optimizer.step()
+
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch} Loss: {loss.item()}')
+```
+
+### Explanation of the Code
+
+1. **Model Definition**:
+   - `SimpleLSTM` class defines the structure of the LSTM with an LSTM layer and a linear layer.
+   - The LSTM layer processes the input sequence and the linear layer generates the final output.
+
+2. **Hyperparameters**:
+   - `input_size`: Dimensionality of the input.
+   - `hidden_size`: Number of neurons in the hidden layer.
+   - `output_size`: Dimensionality of the output.
+
+3. **Training Loop**:
+   - The input sequence (`inputs`) and the target (`targets`) are defined.
+   - For each epoch, the model processes the input sequence, computes the loss, performs backpropagation, and updates the model parameters.
+
+### Conclusion
+
+Long Short-Term Memory (LSTM) networks are a type of RNN that can effectively capture long-term dependencies in sequential data. They use gates to control the flow of information and address the vanishing gradient problem. Understanding the key concepts and seeing practical examples can help beginners grasp how LSTMs work and how to implement them in real-world scenarios.

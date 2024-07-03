@@ -3296,3 +3296,152 @@ print(pd.DataFrame(H, columns=vectorizer.get_feature_names_out(), index=['Topic 
 ### Conclusion
 
 Nonnegative Matrix Factorization (NMF) is a valuable technique for decomposing data into interpretable components, especially when dealing with nonnegative data. It is widely used in various applications, including topic modeling, image processing, and recommender systems. By understanding the key concepts and how NMF works, you can apply this technique to uncover hidden patterns and structures in your data.
+
+### Introduction to Recurrent Neural Networks (RNNs)
+
+Recurrent Neural Networks (RNNs) are a class of artificial neural networks designed for sequential data. They are particularly well-suited for tasks where the order of data points is crucial, such as time series forecasting, language modeling, and speech recognition.
+
+### Key Terms and Definitions
+
+1. **Sequential Data**:
+   - Data where the order of elements matters.
+   - Examples: Time series data, sentences in a text, audio signals.
+
+2. **Neurons**:
+   - Basic units of neural networks that process inputs to produce outputs.
+
+3. **Hidden State**:
+   - A set of neurons that capture the information from previous time steps in the sequence.
+   - Example: In language modeling, the hidden state retains information about the previous words to predict the next word.
+
+4. **Weights**:
+   - Parameters in the network that are learned during training.
+   - Two types in RNNs: weights for input-to-hidden connections and weights for hidden-to-hidden connections.
+
+5. **Activation Function**:
+   - A function applied to the input of a neuron to introduce non-linearity.
+   - Common activation functions: sigmoid, tanh, ReLU.
+
+### How RNNs Work
+
+1. **Input Sequence**:
+   - The input to an RNN is a sequence of data points, such as a sentence.
+   - Example: "The cat sat on the mat."
+
+2. **Hidden State Update**:
+   - At each time step, the RNN takes an input and the previous hidden state to compute the new hidden state.
+   - Formula: 
+     \[
+     h_t = \text{tanh}(W_{xh}x_t + W_{hh}h_{t-1} + b_h)
+     \]
+     where \( h_t \) is the current hidden state, \( x_t \) is the current input, \( W_{xh} \) and \( W_{hh} \) are weight matrices, and \( b_h \) is a bias term.
+
+3. **Output Generation**:
+   - The RNN generates an output at each time step based on the current hidden state.
+   - Formula: 
+     \[
+     y_t = W_{hy}h_t + b_y
+     \]
+     where \( y_t \) is the output, \( W_{hy} \) is the weight matrix for hidden-to-output connections, and \( b_y \) is a bias term.
+
+### Example: Language Modeling
+
+In language modeling, RNNs predict the next word in a sequence based on the previous words.
+
+1. **Input**:
+   - Sequence: "The cat sat on the"
+   - Task: Predict the next word ("mat").
+
+2. **RNN Processing**:
+   - The RNN processes each word in the sequence one by one, updating the hidden state at each step.
+
+3. **Output**:
+   - After processing "The cat sat on the", the RNN predicts the most likely next word.
+
+### Code Example
+
+Here’s an example of how to implement a simple RNN using Python and the PyTorch library:
+
+#### 1. Install PyTorch
+If you haven't already, install PyTorch:
+```sh
+pip install torch
+```
+
+#### 2. Define the RNN Model
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(SimpleRNN, self).__init__()
+        self.hidden_size = hidden_size
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(hidden_size, output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
+
+    def forward(self, input, hidden):
+        combined = torch.cat((input, hidden), 1)
+        hidden = self.i2h(combined)
+        output = self.i2o(hidden)
+        output = self.softmax(output)
+        return output, hidden
+
+    def init_hidden(self):
+        return torch.zeros(1, self.hidden_size)
+
+# Hyperparameters
+input_size = 10
+hidden_size = 20
+output_size = 10
+
+# Initialize the model, loss function, and optimizer
+rnn = SimpleRNN(input_size, hidden_size, output_size)
+criterion = nn.NLLLoss()
+optimizer = optim.SGD(rnn.parameters(), lr=0.01)
+```
+
+#### 3. Training the RNN
+```python
+# Dummy input and target tensors
+inputs = [torch.randn(1, input_size) for _ in range(5)]
+targets = torch.tensor([1, 2, 3, 4, 5], dtype=torch.long)
+
+# Training loop
+for epoch in range(100):
+    hidden = rnn.init_hidden()
+    rnn.zero_grad()
+    loss = 0
+
+    for i in range(len(inputs)):
+        output, hidden = rnn(inputs[i], hidden)
+        loss += criterion(output, targets[i].view(-1))
+
+    loss.backward()
+    optimizer.step()
+
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch} Loss: {loss.item()}')
+```
+
+### Explanation of the Code
+
+1. **Model Definition**:
+   - `SimpleRNN` class defines the structure of the RNN with an input-to-hidden layer and a hidden-to-output layer.
+   - `init_hidden` method initializes the hidden state to zeros.
+
+2. **Hyperparameters**:
+   - `input_size`: Dimensionality of the input.
+   - `hidden_size`: Number of neurons in the hidden layer.
+   - `output_size`: Dimensionality of the output.
+
+3. **Training Loop**:
+   - For each epoch, the hidden state is initialized.
+   - The model processes each input in the sequence, updates the hidden state, and computes the loss.
+   - The loss is backpropagated, and the model parameters are updated.
+
+### Conclusion
+
+Recurrent Neural Networks (RNNs) are powerful tools for handling sequential data. They maintain hidden states to capture information from previous time steps, making them suitable for tasks like language modeling, time series prediction, and more. Understanding the key concepts and seeing practical examples can help beginners grasp how RNNs work and how to implement them in real-world scenarios.
